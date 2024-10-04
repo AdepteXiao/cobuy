@@ -14,9 +14,11 @@ const groupImage = ref('src/assets/test-photo.png');
 <!--      <img :src="groupImage" alt="Group Image" />-->
     </div>
     <div class="group-info">
-      <h2>{{ groupName }}</h2>
-      <p><fa :icon="['fas', 'users']" /> Participants: {{ participantsCount }}</p>
-      <p><fa :icon="['fas', 'file-alt']" /> Posts: {{ postsCount }}</p>
+      <h4>{{ groupName }}</h4>
+      <div class="info-with-icons">
+        <p><fa :icon="['fas', 'users']" class="icon-info"/> {{ participantsCount }}</p>
+        <p><fa :icon="['fas', 'file-alt']" class="icon-info"/> {{ postsCount }}</p>
+      </div>
     </div>
   </div>
 </template>
@@ -26,14 +28,12 @@ const groupImage = ref('src/assets/test-photo.png');
   display: flex;
   align-items: center;
   padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  background-color: #f9f9f9;
+  background-color: var(--color-accent);
 }
 
 .icon {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background-color: #007bff;
   display: flex;
@@ -53,13 +53,20 @@ const groupImage = ref('src/assets/test-photo.png');
   font-size: 1.5em;
 }
 
-.group-info p {
-  margin: 5px 0;
+.info-with-icons {
   display: flex;
-  align-items: center;
+  flex-direction: row;
+  gap: 17px;
 }
 
-.group-info p fa {
-  margin-right: 5px;
+.info-with-icons p {
+  gap: 7px;
+  color: var(--color-icon);
 }
+
+.icon-info {
+  font-size:12px;
+  color: var(--color-icon);
+}
+
 </style>
