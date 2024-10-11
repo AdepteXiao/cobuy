@@ -1,65 +1,112 @@
-<script setup xmlns="http://www.w3.org/1999/html">
-  import GroupComponent from "@/components/GroupComponent.vue";
-  import { ref } from 'vue';
-  import AuthApi from './api/AuthApi.js';
-  import {useDark, useToggle} from "@vueuse/core";
-  const isDark = useDark();
-  const toggleDark = useToggle(isDark);
-  // export default {
-  //   name: 'App',
-    // components: {
-    // },
-  // }
-  const email = ref('');
-  const password = ref('');
-  let success = ref(false);
-  const isLeftPartVisible = ref(true);
+<script>
+import GroupComponent from "@/components/GroupComponent.vue";
+import NoteComponent from "@/components/NoteComponent.vue";
+import {ref} from 'vue';
+import AuthApi from './api/AuthApi.js';
+import {useDark, useToggle} from "@vueuse/core";
+import {useDisplay} from "vuetify";
 
-
-  const handleLogin = async () => {
-    try {
-      const response = await AuthApi.login(email.value, password.value);
-      console.log(response);
-      success.value = true;
-    } catch (error) {
-      console.error(error);
+export default {
+  name: 'App',
+  components: {
+    GroupComponent,
+    NoteComponent
+  },
+  data() {
+    return {
+      drawer: true,
+      email: '',
+      password: '',
+      success: false,
+      isLeftPartVisible: true,
+      isDark: useDark(),
+      toggleDark: useToggle(useDark()),
+      display: useDisplay(),
+    };
+  },
+  methods: {
+    async handleLogin() {
+      try {
+        const response = await AuthApi.login(this.email, this.password);
+        console.log(response);
+        this.success = true;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    toggleLeftPart() {
+      this.isLeftPartVisible = !this.isLeftPartVisible;
     }
-  };
-  const toggleLeftPart = () => {
-    isLeftPartVisible.value = !isLeftPartVisible.value;
-  };
+
+  },
+  mounted() {
+    console.log(display.width.value);
+  }
+}
 </script>
 
 <template>
-  <div id="app">
-    <main class="main-container">
-      <div class="left-part" v-if="isLeftPartVisible">
-        <button class="toggle-button" @click="toggleLeftPart">
-          <fa :icon="['fas', 'bars']" />
-        </button>
-        <GroupComponent />
-        <GroupComponent />
-        <GroupComponent />
-        <GroupComponent />
-        <GroupComponent />
-      </div>
-      <div class="right-part">
-        <div class="app-bar">
-          <button  v-if="!isLeftPartVisible" class="open-bar-button" @click="toggleLeftPart">
-            <fa :icon="['fas', 'bars']" />
-          </button>
-          <p>Группа №1 | Список группы №1</p>
-        </div>
-<!--        <form @submit.prevent="handleLogin">-->
-<!--          <input type="email" v-model="email" placeholder="Email" required />-->
-<!--          <input type="password" v-model="password" placeholder="Password" required />-->
-<!--          <button type="submit">Войти</button>-->
-<!--        </form>-->
-<!--        <fa icon="plus"/>-->
-<!--        <p v-if="success">Успех!</p>-->
-      </div>
-    </main>
-  </div>
+  <v-app id="app">
+
+    <v-main>
+        <v-row>
+          <v-navigation-drawer class="left-drawer" permanent>
+            <v-list-item title="My Application"></v-list-item>
+            <v-divider></v-divider>
+            <GroupComponent />
+            <GroupComponent />
+            <GroupComponent />
+            <GroupComponent />
+          </v-navigation-drawer>
+          <v-container>
+            <v-app-bar >
+            </v-app-bar>
+            <NoteComponent />
+            <NoteComponent />
+            <NoteComponent />
+          </v-container>
+        </v-row>
+    </v-main>
+    <!--  <div id="app">-->
+    <!--    <main class="main-container">-->
+    <!--      <v-navigation-drawer v-if="isLeftPartVisible">-->
+    <!--        <v-list-item title="My Application" subtitle="Vuetify"></v-list-item>-->
+    <!--        <v-divider></v-divider>-->
+    <!--        <v-list-item link title="List Item 1"></v-list-item>-->
+    <!--        <v-list-item link title="List Item 2"></v-list-item>-->
+    <!--        <v-list-item link title="List Item 3"></v-list-item>-->
+    <!--      </v-navigation-drawer>-->
+    <!--&lt;!&ndash;      <div class="left-part col-md-3 col-lg-3" v-if="isLeftPartVisible">&ndash;&gt;-->
+    <!--&lt;!&ndash;        <button class="toggle-button" @click="toggleLeftPart">&ndash;&gt;-->
+    <!--&lt;!&ndash;          <fa :icon="['fas', 'bars']" />&ndash;&gt;-->
+    <!--&lt;!&ndash;        </button>&ndash;&gt;-->
+    <!--&lt;!&ndash;        <GroupComponent />&ndash;&gt;-->
+    <!--&lt;!&ndash;        <GroupComponent />&ndash;&gt;-->
+    <!--&lt;!&ndash;        <GroupComponent />&ndash;&gt;-->
+    <!--&lt;!&ndash;        <GroupComponent />&ndash;&gt;-->
+    <!--&lt;!&ndash;        <GroupComponent />&ndash;&gt;-->
+    <!--&lt;!&ndash;      </div>&ndash;&gt;-->
+    <!--      <div class="right-part ">-->
+    <!--        <div class="app-bar">-->
+    <!--          <button  v-if="!isLeftPartVisible" class="open-bar-button" @click="toggleLeftPart">-->
+    <!--            <fa :icon="['fas', 'bars']" />-->
+    <!--          </button>-->
+    <!--          <p>Группа №1 | Список группы №1</p>-->
+    <!--        </div>-->
+    <!--        <NoteComponent />-->
+    <!--        <NoteComponent />-->
+    <!--        <NoteComponent />-->
+    <!--&lt;!&ndash;        <form @submit.prevent="handleLogin">&ndash;&gt;-->
+    <!--&lt;!&ndash;          <input type="email" v-model="email" placeholder="Email" required />&ndash;&gt;-->
+    <!--&lt;!&ndash;          <input type="password" v-model="password" placeholder="Password" required />&ndash;&gt;-->
+    <!--&lt;!&ndash;          <button type="submit">Войти</button>&ndash;&gt;-->
+    <!--&lt;!&ndash;        </form>&ndash;&gt;-->
+    <!--&lt;!&ndash;        <fa icon="plus"/>&ndash;&gt;-->
+    <!--&lt;!&ndash;        <p v-if="success">Успех!</p>&ndash;&gt;-->
+    <!--      </div>-->
+    <!--    </main>-->
+    <!--  </div>-->
+  </v-app>
 </template>
 
 <style scoped>
@@ -72,9 +119,10 @@
 }
 
 .app-bar {
-  background-color: var(--color-accent);
+  background-color: var(--color-accent) !important;
   color: var(--color-text);
   padding: 10px;
+  height: 30px;
   text-align: center;
   display: flex;
   flex-direction: row;
@@ -82,6 +130,7 @@
   align-items: center;
   position: relative;
 }
+
 .open-bar-button {
   position: absolute;
   left: 10px;
@@ -92,16 +141,13 @@
   display: flex;
 }
 
-.left-part {
+.left-drawer {
   background-color: var(--color-base);
-  flex: 0 0 25%;
-  height: 100vh;
   border-right: 1px solid #ccc;
   min-width: 300px;
 }
 
 .right-part {
-  flex: 1;
   height: 100vh;
   min-width: 400px;
 }

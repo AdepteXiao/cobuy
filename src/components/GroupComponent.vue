@@ -59,6 +59,10 @@ const groupImage = ref('src/assets/test-photo.png');
   gap: 17px;
 }
 
+h4 {
+  font-size: 16px;
+}
+
 .info-with-icons p {
   gap: 7px;
   color: var(--color-icon);
