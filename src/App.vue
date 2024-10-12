@@ -22,6 +22,7 @@ export default {
       isDark: useDark(),
       toggleDark: useToggle(useDark()),
       display: useDisplay(),
+      closableDrawer: true,
     };
   },
   methods: {
@@ -35,12 +36,35 @@ export default {
       }
     },
     toggleLeftPart() {
-      this.isLeftPartVisible = !this.isLeftPartVisible;
+      if (this.closableDrawer) {
+        this.drawer = !this.drawer;
+      }
+    },
+    handleResize(entries) {
+      for (let entry of entries) {
+        // this.drawer = !(entry.contentRect.width <= 1280);
+        if (entry.contentRect.width <= 1280) {
+          console.log('<= 800px');
+          this.closableDrawer = true;
+          this.drawer = false;
+        } else {
+          console.log('>= 800px');
+          this.closableDrawer = false;
+          this.drawer = true
+        }
+      }
     }
 
   },
   mounted() {
-    console.log(display.width.value);
+    const resizeObserver = new ResizeObserver(this.handleResize);
+    const element = this.$el;
+    resizeObserver.observe(element);
+
+    this.resizeObserver = resizeObserver;
+  },
+  beforeUnmount() {
+    this.resizeObserver.disconnect();
   }
 }
 </script>
@@ -49,24 +73,48 @@ export default {
   <v-app id="app">
 
     <v-main>
-        <v-row>
-          <v-navigation-drawer class="left-drawer" permanent>
-            <v-list-item title="My Application"></v-list-item>
-            <v-divider></v-divider>
-            <GroupComponent />
-            <GroupComponent />
-            <GroupComponent />
-            <GroupComponent />
+      <v-row no-gutters>
+        <v-col >
+          <v-navigation-drawer cols="3" v-if="drawer" v-model="drawer" class="left-drawer">
+            <GroupComponent/>
+            <GroupComponent/>
+            <GroupComponent/>
+            <GroupComponent/>
           </v-navigation-drawer>
-          <v-container>
-            <v-app-bar >
-            </v-app-bar>
-            <NoteComponent />
-            <NoteComponent />
-            <NoteComponent />
-          </v-container>
-        </v-row>
+        </v-col>
+        <v-col cols="12" class="right-part">
+          <v-toolbar class="app-bar">
+            <v-btn v-if="closableDrawer" icon @click="toggleLeftPart">
+              <fa :icon="['fas', 'angle-left']" class="app-bar-icon"/>
+            </v-btn>
+          </v-toolbar>
+          <NoteComponent/>
+          <NoteComponent/>
+          <NoteComponent/>
+        </v-col>
+      </v-row>
     </v-main>
+
+<!--    <v-main>-->
+<!--      <v-row no-gutters>-->
+<!--        <v-col cols="3">-->
+<!--          <v-navigation-drawer class="left-drawer" v-model="drawer">-->
+<!--            <GroupComponent/>-->
+<!--            <GroupComponent/>-->
+<!--            <GroupComponent/>-->
+<!--            <GroupComponent/>-->
+<!--          </v-navigation-drawer>-->
+<!--        </v-col>-->
+<!--        <v-col cols="12" class="right-part">-->
+<!--            <v-toolbar title="Группа 1"></v-toolbar>-->
+<!--            <NoteComponent/>-->
+<!--            <NoteComponent/>-->
+<!--            <NoteComponent/>-->
+<!--        </v-col>-->
+<!--      </v-row>-->
+<!--    </v-main>-->
+
+
     <!--  <div id="app">-->
     <!--    <main class="main-container">-->
     <!--      <v-navigation-drawer v-if="isLeftPartVisible">-->
@@ -114,6 +162,12 @@ export default {
   background-color: var(--color-background);
 }
 
+.app-bar-icon {
+  font-size:20px;
+  font-weight: lighter;
+  color: var(--color-text);
+}
+
 .toggle-button {
   margin: 10px;
 }
@@ -121,8 +175,7 @@ export default {
 .app-bar {
   background-color: var(--color-accent) !important;
   color: var(--color-text);
-  padding: 10px;
-  height: 30px;
+  height: 50px;
   text-align: center;
   display: flex;
   flex-direction: row;
@@ -144,11 +197,9 @@ export default {
 .left-drawer {
   background-color: var(--color-base);
   border-right: 1px solid #ccc;
-  min-width: 300px;
 }
 
 .right-part {
   height: 100vh;
-  min-width: 400px;
 }
 </style>

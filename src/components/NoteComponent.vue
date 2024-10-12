@@ -18,6 +18,7 @@
 
 <style scoped>
 .note-card {
+  min-width: 400px;
   display: flex;
   flex-direction: row;
   margin: 10px;

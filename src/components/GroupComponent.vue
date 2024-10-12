@@ -9,18 +9,21 @@ const groupImage = ref('src/assets/test-photo.png');
 </script>
 
 <template>
-  <div class="group-component">
-    <div class="icon">
-<!--      <img :src="groupImage" alt="Group Image" />-->
-    </div>
-    <div class="group-info">
-      <h4>{{ groupName }}</h4>
-      <div class="info-with-icons">
-        <p><fa :icon="['fas', 'users']" class="icon-info"/> {{ participantsCount }}</p>
-        <p><fa :icon="['fas', 'file-alt']" class="icon-info"/> {{ postsCount }}</p>
+  <v-card variant="flat" @click="">
+    <div class="group-component">
+      <div class="icon">
+        <!--      <img :src="groupImage" alt="Group Image" />-->
+      </div>
+      <div class="group-info">
+        <h4>{{ groupName }}</h4>
+        <div class="info-with-icons">
+          <p><fa :icon="['fas', 'users']" class="icon-info"/> {{ participantsCount }}</p>
+          <p><fa :icon="['fas', 'file-alt']" class="icon-info"/> {{ postsCount }}</p>
+        </div>
       </div>
     </div>
-  </div>
+  </v-card>
+
 </template>
 
 <style scoped>
@@ -59,8 +62,14 @@ const groupImage = ref('src/assets/test-photo.png');
   gap: 17px;
 }
 
+p {
+  margin: 0;
+  font-size: 15px;
+}
+
 h4 {
-  font-size: 16px;
+  font-size: 14px;
+  margin-bottom: 2px;
 }
 
 .info-with-icons p {
@@ -71,6 +80,7 @@ h4 {
 .icon-info {
   font-size:12px;
   color: var(--color-icon);
+
 }
 
 </style>
