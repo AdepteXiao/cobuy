@@ -30,7 +30,7 @@
 
 .left-rectangle {
   flex: 1 1 10vh;
-  max-width: 35px;
+  max-width: 30px;
   min-width: 10px;
   background-color: var(--color-accent);
 }

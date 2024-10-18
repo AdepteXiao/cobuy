@@ -43,7 +43,7 @@ export default {
     handleResize(entries) {
       for (let entry of entries) {
         // this.drawer = !(entry.contentRect.width <= 1280);
-        if (entry.contentRect.width <= 1280) {
+        if (entry.contentRect.width <= 800) {
           console.log('<= 800px');
           this.closableDrawer = true;
           this.drawer = false;
@@ -74,45 +74,78 @@ export default {
 
     <v-main>
       <v-row no-gutters>
-        <v-col >
-          <v-navigation-drawer cols="3" v-if="drawer" v-model="drawer" class="left-drawer">
-            <GroupComponent/>
-            <GroupComponent/>
-            <GroupComponent/>
-            <GroupComponent/>
-          </v-navigation-drawer>
+        <v-col cols="auto" v-if="drawer" v-model="drawer" class="left-drawer">
+          <!--          <v-navigation-drawer cols="3" v-if="drawer" v-model="drawer" class="left-drawer">-->
+          <div class="scroll-list-annotation">
+            <p class="annotation-text">Группы</p>
+            <v-spacer></v-spacer>
+            <v-btn icon flat size="x-small" class="sidebar-button">
+              <fa :icon="['fas', 'plus']"/>
+            </v-btn>
+          </div>
+          <v-divider></v-divider>
+          <v-list class="sidebar-list" overflow-y-auto>
+            <div v-for="index in 10" :key="index">
+              <GroupComponent/>
+              <v-divider></v-divider>
+            </div>
+          </v-list>
+          <v-divider></v-divider>
+          <div class="scroll-list-annotation">
+            <p class="annotation-text">Списки</p>
+            <v-spacer></v-spacer>
+            <v-btn icon flat size="x-small" class="sidebar-button">
+              <fa :icon="['fas', 'plus']"/>
+            </v-btn>
+          </div>
+          <v-divider></v-divider>
+          <v-list class="sidebar-list" overflow-y-auto>
+            <div v-for="index in 10" :key="index">
+              <GroupComponent/>
+              <v-divider></v-divider>
+            </div>
+          </v-list>
+          <v-divider></v-divider>
+          <!--          </v-navigation-drawer>-->
         </v-col>
-        <v-col cols="12" class="right-part">
+        <v-col class="right-part">
           <v-toolbar class="app-bar">
             <v-btn v-if="closableDrawer" icon @click="toggleLeftPart">
               <fa :icon="['fas', 'angle-left']" class="app-bar-icon"/>
             </v-btn>
+            <p class="app-bar-text">Группа №1 | Список группы №1</p>
+            <v-spacer></v-spacer>
+            <v-btn icon @click="">
+              <fa :icon="['fas', 'gear']" class="app-bar-icon"/>
+            </v-btn>
           </v-toolbar>
-          <NoteComponent/>
-          <NoteComponent/>
-          <NoteComponent/>
+          <v-list class="main-list" overflow-y-auto>
+            <div v-for="index in 10" :key="index">
+              <NoteComponent/>
+            </div>
+          </v-list>
         </v-col>
       </v-row>
     </v-main>
 
-<!--    <v-main>-->
-<!--      <v-row no-gutters>-->
-<!--        <v-col cols="3">-->
-<!--          <v-navigation-drawer class="left-drawer" v-model="drawer">-->
-<!--            <GroupComponent/>-->
-<!--            <GroupComponent/>-->
-<!--            <GroupComponent/>-->
-<!--            <GroupComponent/>-->
-<!--          </v-navigation-drawer>-->
-<!--        </v-col>-->
-<!--        <v-col cols="12" class="right-part">-->
-<!--            <v-toolbar title="Группа 1"></v-toolbar>-->
-<!--            <NoteComponent/>-->
-<!--            <NoteComponent/>-->
-<!--            <NoteComponent/>-->
-<!--        </v-col>-->
-<!--      </v-row>-->
-<!--    </v-main>-->
+    <!--    <v-main>-->
+    <!--      <v-row no-gutters>-->
+    <!--        <v-col cols="3">-->
+    <!--          <v-navigation-drawer class="left-drawer" v-model="drawer">-->
+    <!--            <GroupComponent/>-->
+    <!--            <GroupComponent/>-->
+    <!--            <GroupComponent/>-->
+    <!--            <GroupComponent/>-->
+    <!--          </v-navigation-drawer>-->
+    <!--        </v-col>-->
+    <!--        <v-col cols="12" class="right-part">-->
+    <!--            <v-toolbar title="Группа 1"></v-toolbar>-->
+    <!--            <NoteComponent/>-->
+    <!--            <NoteComponent/>-->
+    <!--            <NoteComponent/>-->
+    <!--        </v-col>-->
+    <!--      </v-row>-->
+    <!--    </v-main>-->
 
 
     <!--  <div id="app">-->
@@ -162,8 +195,49 @@ export default {
   background-color: var(--color-background);
 }
 
+.v-divider {
+  margin: 0;
+  padding: 0;
+  color: var(--color-subtext);
+}
+
+.v-list {
+  padding: 0;
+  background-color: rgba(0, 0, 0, 0);
+  max-height: calc(100vh - 50px);
+}
+
+.scroll-list-annotation{
+  padding: 13px 5px 5px 15px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.annotation-text {
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--color-subtext);
+}
+
+.sidebar-button {
+  color: var(--color-subtext);
+  font-size: 15px;
+  background-color: var(--color-base);
+}
+
+.sidebar-list {
+  active-color: var(--color-background);
+  max-height: calc(50vh - 52px);
+}
+
+::-webkit-scrollbar {
+  width: 0;
+}
+
 .app-bar-icon {
-  font-size:20px;
+  font-size: 20px;
   font-weight: lighter;
   color: var(--color-text);
 }
@@ -184,6 +258,16 @@ export default {
   position: relative;
 }
 
+.app-bar-text {
+  padding-left: 20px;
+  font-size: 17px;
+}
+
+.open-bar-button {
+  position: absolute;
+  left: 10px;
+}
+
 .open-bar-button {
   position: absolute;
   left: 10px;
@@ -197,9 +281,15 @@ export default {
 .left-drawer {
   background-color: var(--color-base);
   border-right: 1px solid #ccc;
+  min-width: 200px !important;
 }
 
 .right-part {
+
   height: 100vh;
+}
+
+p {
+  margin: 0;
 }
 </style>

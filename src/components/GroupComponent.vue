@@ -9,8 +9,7 @@ const groupImage = ref('src/assets/test-photo.png');
 </script>
 
 <template>
-  <v-card variant="flat" @click="">
-    <div class="group-component">
+  <v-card variant="flat" @click="" class="group-component" rounded="0">
       <div class="icon">
         <!--      <img :src="groupImage" alt="Group Image" />-->
       </div>
@@ -21,7 +20,10 @@ const groupImage = ref('src/assets/test-photo.png');
           <p><fa :icon="['fas', 'file-alt']" class="icon-info"/> {{ postsCount }}</p>
         </div>
       </div>
-    </div>
+      <v-spacer></v-spacer>
+      <v-btn icon flat class="button-icon">
+        <fa :icon="['fas', 'ellipsis-h']" />
+      </v-btn>
   </v-card>
 
 </template>
@@ -31,8 +33,15 @@ const groupImage = ref('src/assets/test-photo.png');
   display: flex;
   align-items: center;
   padding: 10px;
+  min-width: 300px;
   background-color: var(--color-accent);
 }
+
+.button-icon {
+  color: var(--color-icon);
+  background-color: var(--color-accent);
+}
+
 
 .icon {
   width: 40px;
