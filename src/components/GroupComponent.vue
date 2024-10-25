@@ -83,11 +83,12 @@ h4 {
 
 .info-with-icons p {
   gap: 7px;
+  font-size: 14px;
   color: var(--color-icon);
 }
 
 .icon-info {
-  font-size:12px;
+  font-size: 12px;
   color: var(--color-icon);
 
 }

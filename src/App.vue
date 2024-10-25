@@ -5,10 +5,12 @@ import {ref} from 'vue';
 import AuthApi from './api/AuthApi.js';
 import {useDark, useToggle} from "@vueuse/core";
 import {useDisplay} from "vuetify";
+import ListComponent from "@/components/ListComponent.vue";
 
 export default {
   name: 'App',
   components: {
+    ListComponent,
     GroupComponent,
     NoteComponent
   },
@@ -101,7 +103,7 @@ export default {
           <v-divider></v-divider>
           <v-list class="sidebar-list" overflow-y-auto>
             <div v-for="index in 10" :key="index">
-              <GroupComponent/>
+              <ListComponent/>
               <v-divider></v-divider>
             </div>
           </v-list>
