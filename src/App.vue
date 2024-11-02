@@ -6,6 +6,8 @@ import AuthApi from './api/AuthApi.js';
 import {useDark, useToggle} from "@vueuse/core";
 import {useDisplay} from "vuetify";
 import ListComponent from "@/components/ListComponent.vue";
+import GroupApi from "@/api/GroupApi.js";
+import BaseApi from "@/api/BaseApi.js";
 
 export default {
   name: 'App',
@@ -17,17 +19,28 @@ export default {
   data() {
     return {
       drawer: true,
-      email: '',
-      password: '',
+      email: "qwe@qwe.qwe",
+      password: "qweqweqwe",
       success: false,
       isLeftPartVisible: true,
       isDark: useDark(),
       toggleDark: useToggle(useDark()),
       display: useDisplay(),
       closableDrawer: true,
+      groups: Object,
     };
   },
   methods: {
+    async getGroups() {
+      try {
+        const response = await GroupApi.getAllGroups();
+        this.groups = response.data;
+        this.groups = this.groups.data;
+        console.log(this.groups.data)
+      } catch (error) {
+        console.log(error);
+      }
+    },
     async handleLogin() {
       try {
         const response = await AuthApi.login(this.email, this.password);
@@ -58,12 +71,17 @@ export default {
     }
 
   },
-  mounted() {
+  async mounted() {
     const resizeObserver = new ResizeObserver(this.handleResize);
     const element = this.$el;
     resizeObserver.observe(element);
 
     this.resizeObserver = resizeObserver;
+
+    localStorage.setItem('auth_token', '139|7s42Ign6FfPGWLKid19zhOPrx7vP4GPOG4hY7gjec976ae6f');
+
+    // await this.handleLogin();
+    await this.getGroups();
   },
   beforeUnmount() {
     this.resizeObserver.disconnect();
@@ -87,8 +105,8 @@ export default {
           </div>
           <v-divider></v-divider>
           <v-list class="sidebar-list" overflow-y-auto>
-            <div v-for="index in 10" :key="index">
-              <GroupComponent/>
+            <div v-for="group in groups" :key="group.id">
+              <GroupComponent :data="group"/>
               <v-divider></v-divider>
             </div>
           </v-list>
@@ -209,7 +227,7 @@ export default {
   max-height: calc(100vh - 50px);
 }
 
-.scroll-list-annotation{
+.scroll-list-annotation {
   padding: 13px 5px 5px 15px;
   display: flex;
   flex-direction: row;

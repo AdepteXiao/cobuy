@@ -1,23 +1,36 @@
-<script setup>
-import { ref } from 'vue';
-
-const groupName = ref('Group Name');
-const participantsCount = ref(10);
-const postsCount = ref(5);
-const groupImage = ref('src/assets/test-photo.png');
+<script>
+export default {
+  name: 'GroupComponent',
+  props: {
+    data: Object,
+  },
+  data() {
+    return {
+      group: this.data
+      // group: {
+      //   name: 'Group Name',
+      //   membersCount: 0,
+      //   listsCount: 0,
+      // }
+    }
+  },
+  mounted() {
+    // console.log(this.group)
+  }
+}
 
 </script>
 
 <template>
   <v-card variant="flat" @click="" class="group-component" rounded="0">
       <div class="icon">
-        <!--      <img :src="groupImage" alt="Group Image" />-->
+        <img :src="group.avaUrl" alt="Group Image" />
       </div>
       <div class="group-info">
-        <h4>{{ groupName }}</h4>
+        <h4>{{ group.name }}</h4>
         <div class="info-with-icons">
-          <p><fa :icon="['fas', 'users']" class="icon-info"/> {{ participantsCount }}</p>
-          <p><fa :icon="['fas', 'file-alt']" class="icon-info"/> {{ postsCount }}</p>
+          <p><fa :icon="['fas', 'users']" class="icon-info"/> {{ group.membersCount }}</p>
+          <p><fa :icon="['fas', 'file-alt']" class="icon-info"/> {{ group.listsCount }}</p>
         </div>
       </div>
       <v-spacer></v-spacer>
@@ -91,6 +104,12 @@ h4 {
   font-size: 12px;
   color: var(--color-icon);
 
+}
+
+img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
 }
 
 </style>

@@ -6,6 +6,8 @@ import App from './App.vue'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap'
 
+import BaseApi from "@/api/BaseApi.js";
+
 
 // Vuetify
 import 'vuetify/styles'
@@ -22,6 +24,8 @@ const vuetify = createVuetify({
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+
+BaseApi.addToken();
 
 library.add(fas);
 createApp(App)
