@@ -15,7 +15,7 @@ export default {
     }
   },
   mounted() {
-    // console.log(this.group)
+    // console.log(this.group.avaUrl)
   }
 }
 
@@ -24,7 +24,7 @@ export default {
 <template>
   <v-card variant="flat" @click="" class="group-component" rounded="0">
       <div class="icon">
-        <img :src="group.avaUrl" alt="Group Image" />
+        <img v-if="group.avaUrl !== null" :src="group.avaUrl" alt="Group Image" />
       </div>
       <div class="group-info">
         <h4>{{ group.name }}</h4>
@@ -60,7 +60,7 @@ export default {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #007bff;
+  background-color: var(--color-background);
   display: flex;
   align-items: center;
   justify-content: center;

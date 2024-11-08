@@ -1,8 +1,30 @@
-<script setup>
-  import {ref} from "vue";
-
-  const listName = ref('List Name');
-  const listProgress = ref(20);
+<script>
+  export default {
+    name: 'ListComponent',
+    props: {
+      data: Object,
+    },
+    data() {
+      return {
+        list: this.data
+        // list: {
+        //   name: 'List Name',
+        //   progress: 0,
+        // }
+      }
+    },
+    computed: {
+      listProgress() {
+        if (this.list.productsCount === 0) {
+          return 0;
+        }
+        return (this.list.checkedProductsCount / this.list.productsCount) * 100;
+      }
+    },
+    mounted() {
+      // console.log(this.list.avaUrl)
+    }
+  }
 
 </script>
 
@@ -10,11 +32,11 @@
   <v-card variant="flat" @click="" class="list-component" rounded="0">
     <div class="column-list">
       <div class="list-info">
-        <h4>{{ listName }}</h4>
+        <h4>{{ list.name }}</h4>
       </div>
       <div class="progress-info">
         <v-progress-linear rounded :model-value="listProgress"></v-progress-linear>
-        <p>{{ listProgress }}%</p>
+        <p>{{ listProgress.toFixed(0) }}%</p>
       </div>
     </div>
     <v-btn icon flat class="button-icon">

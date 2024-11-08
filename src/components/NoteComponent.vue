@@ -1,11 +1,16 @@
 <script>
 export default {
+  name: 'NoteComponent',
+  props: {
+    data: Object,
+  },
   data() {
     return {
-      noteTitle: 'Маринованные огурцы',
-      noteDescription: 'Ты чувствуешь вкус настоящей жизни, потому что у тебя есть он — /Огурец от Копатыча',
-      notePrice: 1000,
-      noteCardWidth: 0
+      prod: this.data
+      // noteTitle: 'Маринованные огурцы',
+      // noteDescription: 'Ты чувствуешь вкус настоящей жизни, потому что у тебя есть он — /Огурец от Копатыча',
+      // notePrice: 1000,
+      // noteCardWidth: 0
     };
   },
   mounted() {
@@ -23,7 +28,7 @@ export default {
       if (noteCard && noteButtons) {
         this.noteCardWidth = noteCard.offsetWidth;
 
-        if (this.noteCardWidth < 500 && this.noteDescription.length > 54) {
+        if (this.noteCardWidth < 500 && this.prod.description.length > 54) {
           noteButtons.style.flexDirection = 'column';
         } else {
           noteButtons.style.flexDirection = 'row';
@@ -40,16 +45,16 @@ export default {
     <div class="content">
       <div class="note-hat">
         <div class="hat-info">
-          <h4>{{ noteTitle }}</h4>
+          <h4>{{ prod.name }}</h4>
           <v-divider></v-divider>
         </div>
         <div class="price">
-          <p>{{ notePrice }}</p>
+          <p>{{ prod.price }}</p>
           <fa :icon="['fas', 'rub']" class="icon"/>
         </div>
       </div>
       <div class="bot-card">
-        <p class="note-description">{{ noteDescription }}</p>
+        <p class="note-description">{{ prod.description }}</p>
         <div ref="noteButtons" class="note-buttons">
           <v-btn density="compact" variant="outlined">Планирую</v-btn>
           <v-btn density="compact" variant="outlined">Куплено</v-btn>

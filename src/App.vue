@@ -8,6 +8,9 @@ import {useDisplay} from "vuetify";
 import ListComponent from "@/components/ListComponent.vue";
 import GroupApi from "@/api/GroupApi.js";
 import BaseApi from "@/api/BaseApi.js";
+import groupUtils from "@/utils/groupUtils.js";
+import ListApi from "@/api/ListApi.js";
+import ProdApi from "@/api/ProdApi.js";
 
 export default {
   name: 'App',
@@ -18,6 +21,8 @@ export default {
   },
   data() {
     return {
+      curGroupId: -1,
+      curListId: -1,
       drawer: true,
       email: "qwe@qwe.qwe",
       password: "qweqweqwe",
@@ -27,18 +32,40 @@ export default {
       toggleDark: useToggle(useDark()),
       display: useDisplay(),
       closableDrawer: true,
-      groups: Object,
+      lists: [],
+      groups: [],
+      products: [],
     };
   },
   methods: {
     async getGroups() {
       try {
         const response = await GroupApi.getAllGroups();
-        this.groups = response.data;
-        this.groups = this.groups.data;
-        console.log(this.groups.data)
+        console.log(response)
+        this.groups = response.data.data;
+        console.log(this.groups)
       } catch (error) {
         console.log(error);
+      }
+    },
+    async getLists(groupId) {
+      this.curGroupId = groupId;
+      try {
+        const response = await ListApi.getAllLists(this.curGroupId);
+        this.lists = response.data.data;
+        console.log(this.lists);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async getAllProds(listId) {
+      this.curListId = listId;
+      try {
+        const response = await ProdApi.getAllProducts(this.curListId);
+        this.products = response.data.data;
+        console.log(this.products);
+      } catch (error) {
+        console.error(error);
       }
     },
     async handleLogin() {
@@ -82,6 +109,8 @@ export default {
 
     // await this.handleLogin();
     await this.getGroups();
+    // this.groups = await groupUtils.getGroups();
+    // console.log(this.groups);
   },
   beforeUnmount() {
     this.resizeObserver.disconnect();
@@ -106,7 +135,7 @@ export default {
           <v-divider></v-divider>
           <v-list class="sidebar-list" overflow-y-auto>
             <div v-for="group in groups" :key="group.id">
-              <GroupComponent :data="group"/>
+              <GroupComponent :data="group" @click="this.getLists(group.id)"/>
               <v-divider></v-divider>
             </div>
           </v-list>
@@ -120,13 +149,12 @@ export default {
           </div>
           <v-divider></v-divider>
           <v-list class="sidebar-list" overflow-y-auto>
-            <div v-for="index in 10" :key="index">
-              <ListComponent/>
+            <div v-for="list in lists" :key="list.id">
+              <ListComponent :data="list" @click="getAllProds(list.id)"/>
               <v-divider></v-divider>
             </div>
           </v-list>
           <v-divider></v-divider>
-          <!--          </v-navigation-drawer>-->
         </v-col>
         <v-col class="right-part">
           <v-toolbar class="app-bar">
@@ -140,73 +168,18 @@ export default {
             </v-btn>
           </v-toolbar>
           <v-list class="main-list" overflow-y-auto>
-            <div v-for="index in 10" :key="index">
-              <NoteComponent/>
+            <div v-for="product in products" :key="product.id">
+              <NoteComponent :data="product"/>
             </div>
           </v-list>
+          <!--          <v-list class="main-list" overflow-y-auto>-->
+          <!--            <div v-for="index in 10" :key="index">-->
+          <!--              <NoteComponent/>-->
+          <!--            </div>-->
+          <!--          </v-list>-->
         </v-col>
       </v-row>
     </v-main>
-
-    <!--    <v-main>-->
-    <!--      <v-row no-gutters>-->
-    <!--        <v-col cols="3">-->
-    <!--          <v-navigation-drawer class="left-drawer" v-model="drawer">-->
-    <!--            <GroupComponent/>-->
-    <!--            <GroupComponent/>-->
-    <!--            <GroupComponent/>-->
-    <!--            <GroupComponent/>-->
-    <!--          </v-navigation-drawer>-->
-    <!--        </v-col>-->
-    <!--        <v-col cols="12" class="right-part">-->
-    <!--            <v-toolbar title="Группа 1"></v-toolbar>-->
-    <!--            <NoteComponent/>-->
-    <!--            <NoteComponent/>-->
-    <!--            <NoteComponent/>-->
-    <!--        </v-col>-->
-    <!--      </v-row>-->
-    <!--    </v-main>-->
-
-
-    <!--  <div id="app">-->
-    <!--    <main class="main-container">-->
-    <!--      <v-navigation-drawer v-if="isLeftPartVisible">-->
-    <!--        <v-list-item title="My Application" subtitle="Vuetify"></v-list-item>-->
-    <!--        <v-divider></v-divider>-->
-    <!--        <v-list-item link title="List Item 1"></v-list-item>-->
-    <!--        <v-list-item link title="List Item 2"></v-list-item>-->
-    <!--        <v-list-item link title="List Item 3"></v-list-item>-->
-    <!--      </v-navigation-drawer>-->
-    <!--&lt;!&ndash;      <div class="left-part col-md-3 col-lg-3" v-if="isLeftPartVisible">&ndash;&gt;-->
-    <!--&lt;!&ndash;        <button class="toggle-button" @click="toggleLeftPart">&ndash;&gt;-->
-    <!--&lt;!&ndash;          <fa :icon="['fas', 'bars']" />&ndash;&gt;-->
-    <!--&lt;!&ndash;        </button>&ndash;&gt;-->
-    <!--&lt;!&ndash;        <GroupComponent />&ndash;&gt;-->
-    <!--&lt;!&ndash;        <GroupComponent />&ndash;&gt;-->
-    <!--&lt;!&ndash;        <GroupComponent />&ndash;&gt;-->
-    <!--&lt;!&ndash;        <GroupComponent />&ndash;&gt;-->
-    <!--&lt;!&ndash;        <GroupComponent />&ndash;&gt;-->
-    <!--&lt;!&ndash;      </div>&ndash;&gt;-->
-    <!--      <div class="right-part ">-->
-    <!--        <div class="app-bar">-->
-    <!--          <button  v-if="!isLeftPartVisible" class="open-bar-button" @click="toggleLeftPart">-->
-    <!--            <fa :icon="['fas', 'bars']" />-->
-    <!--          </button>-->
-    <!--          <p>Группа №1 | Список группы №1</p>-->
-    <!--        </div>-->
-    <!--        <NoteComponent />-->
-    <!--        <NoteComponent />-->
-    <!--        <NoteComponent />-->
-    <!--&lt;!&ndash;        <form @submit.prevent="handleLogin">&ndash;&gt;-->
-    <!--&lt;!&ndash;          <input type="email" v-model="email" placeholder="Email" required />&ndash;&gt;-->
-    <!--&lt;!&ndash;          <input type="password" v-model="password" placeholder="Password" required />&ndash;&gt;-->
-    <!--&lt;!&ndash;          <button type="submit">Войти</button>&ndash;&gt;-->
-    <!--&lt;!&ndash;        </form>&ndash;&gt;-->
-    <!--&lt;!&ndash;        <fa icon="plus"/>&ndash;&gt;-->
-    <!--&lt;!&ndash;        <p v-if="success">Успех!</p>&ndash;&gt;-->
-    <!--      </div>-->
-    <!--    </main>-->
-    <!--  </div>-->
   </v-app>
 </template>
 
@@ -249,7 +222,7 @@ export default {
 
 .sidebar-list {
   active-color: var(--color-background);
-  max-height: calc(50vh - 52px);
+  height: calc(50vh - 52px);
 }
 
 ::-webkit-scrollbar {

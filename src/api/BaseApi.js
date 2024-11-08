@@ -7,6 +7,7 @@ const baseAddress = 'http://hihit.sytes.net';
 const loginAddress = `${baseAddress}/api/login`;
 const groupAddress = `${baseAddress}/api/group`;
 const listAddress = `${baseAddress}/api/list`;
+const prodAddress = `${baseAddress}/api/list`;
 
 
 const loginApi = axios.create({
@@ -21,8 +22,12 @@ const listApi = axios.create({
     baseURL: listAddress,
 });
 
+const prodApi = axios.create({
+    baseURL: prodAddress,
+});
+
 function addToken() {
-    [groupApi, listApi, loginApi].forEach(api => {
+    [groupApi, listApi, loginApi, prodApi].forEach(api => {
         api.interceptors.request.use(config => {
             if (localStorage.getItem("auth_token")) {
                 config.headers.Authorization = `Bearer ${localStorage.getItem("auth_token")}`;
@@ -40,5 +45,6 @@ export default {
     loginApi,
     groupApi,
     listApi,
+    prodApi,
     addToken
 }
