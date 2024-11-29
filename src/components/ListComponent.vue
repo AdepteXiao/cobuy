@@ -1,4 +1,7 @@
 <script>
+  import GroupApi from "@/api/GroupApi.js";
+  import ListApi from "@/api/ListApi.js";
+
   export default {
     name: 'ListComponent',
     props: {
@@ -7,10 +10,6 @@
     data() {
       return {
         list: this.data
-        // list: {
-        //   name: 'List Name',
-        //   progress: 0,
-        // }
       }
     },
     computed: {
@@ -21,8 +20,17 @@
         return (this.list.checkedProductsCount / this.list.productsCount) * 100;
       }
     },
+    methods: {
+      async deleteList(listId) {
+        try {
+          await ListApi.deleteList(listId);
+          this.$emit('list-deleted', listId);
+        } catch (error) {
+          console.log(error);
+        }
+      },
+    },
     mounted() {
-      // console.log(this.list.avaUrl)
     }
   }
 
@@ -39,13 +47,40 @@
         <p>{{ listProgress.toFixed(0) }}%</p>
       </div>
     </div>
-    <v-btn icon flat class="button-icon">
-      <fa :icon="['fas', 'ellipsis-h']" />
-    </v-btn>
+    <v-menu :location="'end top'">
+      <template v-slot:activator="{ props }">
+        <v-btn icon flat class="button-icon" v-bind="props">
+          <fa :icon="['fas', 'ellipsis-h']"/>
+        </v-btn>
+      </template>
+
+      <v-list >
+        <v-list-item @click="">
+          <v-list-item-title>Редактировать</v-list-item-title>
+        </v-list-item>
+        <v-list-item @click="deleteList(list.id)">
+          <v-list-item-title>Удалить</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
   </v-card>
 </template>
 
 <style scoped>
+.v-list {
+  padding: 0;
+}
+
+.v-list-item {
+  color: var(--color-icon);
+  margin: 0 !important;
+}
+
+.v-list-item--density-default.v-list-item--one-line {
+  min-height: 35px;
+  padding: 12px 5px 12px 5px;
+}
+
 .list-component {
   display: flex;
   align-items: center;

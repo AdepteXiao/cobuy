@@ -1,4 +1,6 @@
 <script>
+import GroupApi from "@/api/GroupApi.js";
+
 export default {
   name: 'GroupComponent',
   props: {
@@ -7,15 +9,19 @@ export default {
   data() {
     return {
       group: this.data
-      // group: {
-      //   name: 'Group Name',
-      //   membersCount: 0,
-      //   listsCount: 0,
-      // }
     }
   },
+  methods: {
+    async deleteGroup(groupId) {
+      try {
+        await GroupApi.deleteGroup(groupId);
+        this.$emit('group-deleted', groupId);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  },
   mounted() {
-    // console.log(this.group.avaUrl)
   }
 }
 
@@ -23,20 +29,39 @@ export default {
 
 <template>
   <v-card variant="flat" @click="" class="group-component" rounded="0">
-      <div class="icon">
-        <img v-if="group.avaUrl !== null" :src="group.avaUrl" alt="Group Image" />
+    <div class="icon">
+      <img v-if="group.avaUrl !== null" :src="group.avaUrl" alt="Group Image"/>
+    </div>
+    <div class="group-info">
+      <h4>{{ group.name }}</h4>
+      <div class="info-with-icons">
+        <p>
+          <fa :icon="['fas', 'users']" class="icon-info"/>
+          {{ group.membersCount }}
+        </p>
+        <p>
+          <fa :icon="['fas', 'file-alt']" class="icon-info"/>
+          {{ group.listsCount }}
+        </p>
       </div>
-      <div class="group-info">
-        <h4>{{ group.name }}</h4>
-        <div class="info-with-icons">
-          <p><fa :icon="['fas', 'users']" class="icon-info"/> {{ group.membersCount }}</p>
-          <p><fa :icon="['fas', 'file-alt']" class="icon-info"/> {{ group.listsCount }}</p>
-        </div>
-      </div>
-      <v-spacer></v-spacer>
-      <v-btn icon flat class="button-icon">
-        <fa :icon="['fas', 'ellipsis-h']" />
-      </v-btn>
+    </div>
+    <v-spacer></v-spacer>
+    <v-menu :location="'end top'">
+      <template v-slot:activator="{ props }">
+        <v-btn icon flat class="button-icon" v-bind="props">
+          <fa :icon="['fas', 'ellipsis-h']"/>
+        </v-btn>
+      </template>
+
+      <v-list >
+        <v-list-item @click="">
+          <v-list-item-title>Редактировать</v-list-item-title>
+        </v-list-item>
+        <v-list-item @click="deleteGroup(group.id)">
+          <v-list-item-title>Удалить</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
   </v-card>
 
 </template>
@@ -48,6 +73,20 @@ export default {
   padding: 10px;
   min-width: 300px;
   background-color: var(--color-accent);
+}
+
+.v-list {
+  padding: 0;
+}
+
+.v-list-item {
+  color: var(--color-icon);
+  margin: 0 !important;
+}
+
+.v-list-item--density-default.v-list-item--one-line {
+  min-height: 35px;
+  padding: 12px 5px 12px 5px;
 }
 
 .button-icon {

@@ -17,4 +17,24 @@ export default class {
         return await BaseApi.groupApi.get(`/${id}`);
     }
 
+    static async deleteGroup(id) {
+        return await BaseApi.groupApi.delete(`/${id}`);
+    }
+
+    static async updateGroup(id, name) {
+        return await BaseApi.groupApi.put(`/${id}`, {
+            name
+        });
+    }
+    static async leaveGroup(id) {
+        return await BaseApi.groupApi.get(`/${id}/leave`);
+    }
+
+    static async kick(id, userId) {
+        return await BaseApi.groupApi.post(``, {
+            id,
+            userId
+        })
+    }
+
 }
