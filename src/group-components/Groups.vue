@@ -10,7 +10,7 @@ export default {
   data() {
     return {
       groups: [],
-      curGroupId: -1,
+      text: ''
     }
   },
   methods: {
@@ -25,7 +25,7 @@ export default {
     async createGroup() {
       try {
         const response = await GroupApi.createGroup("New Group", "");
-        this.groups.push(response.data.data);
+        this.groups.unshift(response.data.data);
       } catch (error) {
         console.log(error);
       }

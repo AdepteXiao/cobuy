@@ -49,7 +49,6 @@ export default {
 </script>
 
 <template>
-  <div>
   <v-card ref="noteCard" class="note-card col-7" @click="">
     <div class="left-rectangle"></div>
     <div class="content">
@@ -66,65 +65,58 @@ export default {
       <div class="bot-card">
         <p class="note-description">{{ prod.description }}</p>
         <div ref="noteButtons" class="note-buttons">
-          <v-btn density="compact" variant="outlined">Планирую</v-btn>
-          <v-btn density="compact" variant="outlined">Куплено</v-btn>
+          <v-btn class="bottom-btn" density="compact" variant="outlined">Планирую</v-btn>
+          <v-btn class="bottom-btn" density="compact" variant="outlined">Куплено</v-btn>
         </div>
       </div>
     </div>
-    <v-btn
-        class="delete-button"
-        color="red"
-        @click="deleteNote(prod.id)"
-        icon
-        elevation="1"
-    >
-      <fa :icon="['fas', 'times']" />
-    </v-btn>
+    <v-menu class="menu-button-container" :location="'end top'">
+      <template v-slot:activator="{ props }">
+        <v-btn icon flat class="button-icon" v-bind="props">
+          <fa :icon="['fas', 'ellipsis-h']"/>
+        </v-btn>
+      </template>
+
+      <v-list>
+        <v-list-item @click="">
+          <v-list-item-title>Редактировать</v-list-item-title>
+        </v-list-item>
+        <v-list-item @click="deleteNote(prod.id)">
+          <v-list-item-title>Удалить</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
   </v-card>
-  </div>
 </template>
 
 <style scoped>
-  .note-card {
-    min-width: 400px;
-    display: flex;
-    flex-direction: row;
-    margin: 10px;
-    border-radius: 20px;
-    background: var(--color-accent);
-    position: relative;
-    overflow: visible; /* Важно для отображения кнопки за пределами карточки */
+.v-list {
+  padding: 0;
+}
+
+.v-list-item {
+  color: var(--color-icon);
+  margin: 0 !important;
+}
+
+.v-list-item--density-default.v-list-item--one-line {
+  min-height: 35px;
+  padding: 12px 5px 12px 5px;
+}
+  .button-icon {
+    color: var(--color-icon);
+    background-color: var(--color-accent);
   }
 
-  .note-card::after {
-    content: "";
-    position: absolute;
-    top: -20px; /* Расширяем зону сверху */
-    bottom: -20px; /* Расширяем зону снизу */
-    left: -20px; /* Расширяем зону слева */
-    right: 60px; /* Делаем пространство справа для кнопки */
-    z-index: 5;
-  }
-
-  .delete-button {
-    position: absolute;
-    top: 50%; /* Центрируем вертикально */
-    right: -40px; /* Сдвигаем кнопку правее */
-    transform: translateY(-50%); /* Корректируем выравнивание */
-    background-color: red;
-    color: white;
-    width: 40px;
-    height: 40px;
-    border-radius: 20% !important;
-    display: none; /* Скрываем по умолчанию */
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    z-index: 10;
-  }
-
-.note-card:hover .delete-button {
-  display: flex; /* Показываем при наведении на карточку */
+.note-card {
+  min-width: 400px;
+  display: flex;
+  flex-direction: row;
+  margin: 10px;
+  border-radius: 20px;
+  background: var(--color-accent);
+  position: relative;
+  overflow: visible;
 }
 
 
@@ -134,10 +126,11 @@ export default {
   gap: 10px;
 }
 
-.price{
+.price {
   display: flex;
   flex-direction: row;
-  align-items: center;}
+  align-items: center;
+}
 
 .icon {
   font-size: 14px;
@@ -147,7 +140,7 @@ export default {
   margin-left: 5px;
 }
 
-.price p{
+.price p {
   font-size: 22px;
   font-weight: normal;
   color: var(--color-text);
@@ -155,7 +148,7 @@ export default {
   padding: 0;
 }
 
-.v-btn {
+.bottom-btn {
   background-color: var(--color-base);
   color: var(--color-text);
   border: 1px solid var(--color-stroke);
@@ -173,7 +166,6 @@ export default {
 }
 
 
-
 .note-hat {
   display: flex;
   width: 100%;
@@ -184,6 +176,7 @@ export default {
 
 .left-rectangle {
   flex: 1 1 10vh;
+  border-radius: 20px 0 0 20px;
   max-width: 30px;
   min-width: 10px;
   background-color: #70C9DC;
@@ -222,4 +215,5 @@ h4 {
   padding: 15px 15px 20px 10px;
 
 }
+
 </style>

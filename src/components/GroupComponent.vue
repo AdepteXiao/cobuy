@@ -1,14 +1,17 @@
 <script>
 import GroupApi from "@/api/GroupApi.js";
+import GroupEditComponent from "@/components/GroupEditComponent.vue";
 
 export default {
   name: 'GroupComponent',
+  components: {GroupEditComponent},
   props: {
     data: Object,
   },
   data() {
     return {
-      group: this.data
+      group: this.data,
+      showEditDialog: false
     }
   },
   methods: {
@@ -29,7 +32,7 @@ export default {
 
 <template>
   <v-card variant="flat" @click="" class="group-component" rounded="0">
-    <div class="icon">
+    <div class="icon_photo">
       <img v-if="group.avaUrl !== null" :src="group.avaUrl" alt="Group Image"/>
     </div>
     <div class="group-info">
@@ -54,7 +57,7 @@ export default {
       </template>
 
       <v-list >
-        <v-list-item @click="">
+        <v-list-item @click="this.showEditDialog = true">
           <v-list-item-title>Редактировать</v-list-item-title>
         </v-list-item>
         <v-list-item @click="deleteGroup(group.id)">
@@ -62,6 +65,7 @@ export default {
         </v-list-item>
       </v-list>
     </v-menu>
+    <GroupEditComponent :group="group" v-model="showEditDialog" max-width="500px"></GroupEditComponent>
   </v-card>
 
 </template>
@@ -95,7 +99,7 @@ export default {
 }
 
 
-.icon {
+.icon_photo {
   width: 40px;
   height: 40px;
   border-radius: 50%;

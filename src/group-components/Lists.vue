@@ -14,8 +14,8 @@
     data() {
       return {
         lists: [],
-        curListId: -1,
-        curGroupId: -1,
+        // curListId: -1,
+        // curGroupId: -1,
       }
     },
     methods: {
@@ -34,7 +34,7 @@
         try {
           const response = await ListApi.createList(this.curGroupId, "New List");
           console.log("added list")
-          this.lists.push(response.data.data);
+          this.lists.unshift(response.data.data);
         } catch (error) {
           console.log(error);
         }
@@ -43,6 +43,12 @@
         const index = this.lists.findIndex(list => list.id === listId);
         if (index !== -1) {
           this.lists.splice(index, 1);
+        }
+      },
+      async updateList(listId) {
+        const index = this.lists.findIndex(list => list.id === listId);
+        if (index !== -1) {
+          this.lists[index].name = this.editedListName;
         }
       },
       async getAllProds(listId) {
@@ -67,7 +73,7 @@
   <v-divider></v-divider>
   <v-list class="sidebar-list" overflow-y-auto>
     <div v-for="list in lists" :key="list.id">
-      <ListComponent :data="list" @list-deleted="deleteList" @click="getAllProds(list.id)"/>
+      <ListComponent :data="list" @list-updated="updateList" @list-deleted="deleteList" @click="getAllProds(list.id)"/>
       <v-divider></v-divider>
     </div>
   </v-list>

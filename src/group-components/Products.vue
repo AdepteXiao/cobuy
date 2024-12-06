@@ -12,7 +12,7 @@ export default {
   data() {
     return {
       products: [],
-      curListId: -1,
+      // curListId: -1,
     }
   },
   methods: {
@@ -52,6 +52,9 @@ import NoteComponent from "@/components/NoteComponent.vue";
 
 <template>
   <v-list class="main-list" overflow-y-auto>
+    <v-btn icon flat class="button-icon" @click="createNote">
+      <fa :icon="['fas', 'plus']"/>
+    </v-btn>
     <div v-for="product in products" :key="product.id">
       <NoteComponent @note-deleted="deleteProduct" :data="product" :listId="this.curListId"/>
     </div>
@@ -59,7 +62,13 @@ import NoteComponent from "@/components/NoteComponent.vue";
 </template>
 
 <style scoped>
+
 p {
   margin: 0;
+}
+.v-btn {
+  margin: 10px;
+  padding: 10px;
+  background: var(--color-accent);
 }
 </style>

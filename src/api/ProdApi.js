@@ -6,7 +6,9 @@ export default class {
     }
 
     static async createProduct(listId, name) {
-        return await BaseApi.prodApi.post(`/${listId}/product`, name);
+        return await BaseApi.prodApi.post(`/${listId}/product`,  {
+            name
+        });
     }
 
     static async deleteProduct(listId, productId) {

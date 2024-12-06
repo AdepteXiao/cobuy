@@ -8,6 +8,8 @@ const loginAddress = `${baseAddress}/api/login`;
 const groupAddress = `${baseAddress}/api/group`;
 const listAddress = `${baseAddress}/api/list`;
 const prodAddress = `${baseAddress}/api/list`;
+const inviteAddress = `${baseAddress}/api/invite`;
+const groupImagesAddress = `${baseAddress}/api/group`;
 
 
 const loginApi = axios.create({
@@ -24,6 +26,14 @@ const listApi = axios.create({
 
 const prodApi = axios.create({
     baseURL: prodAddress,
+});
+
+const inviteApi = axios.create({
+    baseURL: inviteAddress,
+});
+
+const groupImagesApi = axios.create({
+    baseURL: groupImagesAddress,
 });
 
 function addToken() {
@@ -46,5 +56,7 @@ export default {
     groupApi,
     listApi,
     prodApi,
+    inviteApi,
+    groupImagesApi,
     addToken
 }

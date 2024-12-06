@@ -9,7 +9,9 @@
     },
     data() {
       return {
-        list: this.data
+        isDialogOpen: false,
+        editedListName: '',
+        list: this.data,
       }
     },
     computed: {
@@ -21,14 +23,29 @@
       }
     },
     methods: {
-      async deleteList(listId) {
+      async deleteList() {
         try {
-          await ListApi.deleteList(listId);
-          this.$emit('list-deleted', listId);
+          this.$emit('list-deleted', this.list.id);
+          await ListApi.deleteList(this.list.id);
         } catch (error) {
           console.log(error);
         }
       },
+      openEditDialog() {
+        this.editedListName = this.list.name;
+        this.isDialogOpen = true;
+      },
+      async updateList() {
+        if (!this.editedListName.trim()) return;
+        try {
+          this.$emit('list-updated', this.list.id);
+          await ListApi.updateList(this.list.id, this.editedListName);
+          this.list.name = this.editedListName;
+          this.isDialogOpen = false;
+        } catch (error) {
+          console.log(error);
+        }
+      }
     },
     mounted() {
     }
@@ -55,14 +72,33 @@
       </template>
 
       <v-list >
-        <v-list-item @click="">
+        <v-list-item @click="openEditDialog">
           <v-list-item-title>Редактировать</v-list-item-title>
         </v-list-item>
-        <v-list-item @click="deleteList(list.id)">
+        <v-list-item @click="deleteList">
           <v-list-item-title>Удалить</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>
+    <v-dialog v-model="isDialogOpen" max-width="500px">
+      <v-card>
+        <v-card-title>Редактировать список</v-card-title>
+        <v-card-text>
+          <v-text-field
+              v-model="editedListName"
+              label="Название списка"
+              outlined
+              dense
+              required>
+          </v-text-field>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn  color="red" @click="isDialogOpen = false">Отмена</v-btn>
+          <v-btn  color="green" @click="updateList">Сохранить</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
