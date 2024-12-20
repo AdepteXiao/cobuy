@@ -1,7 +1,10 @@
 <script>
 import QRCode from "qrcode";
+import Compressor from 'compressorjs';
 import GroupApi from "@/api/GroupApi.js";
 import ListApi from "@/api/ListApi.js";
+import imageCompression from 'browser-image-compression';
+
 
 export default {
   name: "GroupEditComponent",
@@ -11,7 +14,9 @@ export default {
   },
   data() {
     return {
-      isDialogOpen: false,
+      isGroupAvaChanged: false,
+      isGroupNameChanged: false,
+      selectedFile: null,
       editingGroupName: this.group.name,
       groupAvaUrl: this.group.avaUrl,
       inviteLink: ``,
@@ -21,13 +26,13 @@ export default {
   },
   methods: {
     async updateGroup() {
-      // if (!this.editedGroupName.trim()) return;
-      try {
-        await GroupApi.updateGroup(this.group.id, this.editingGroupName);
-        this.$emit("group-updated", {name: this.editingGroupName, avaUrl: this.groupAvaUrl});
-        this.isDialogOpen = false;
-      } catch (error) {
-        console.error("Error updating group:", error);
+      if (this.isGroupAvaChanged) {
+        const formData = new FormData();
+        formData.append("image", this.selectedFile);
+        this.$emit("group-ava-edited", this.group.id, formData);
+      }
+      if (this.isGroupNameChanged) {
+        this.$emit("group-name-edited", this.group.id, this.editingGroupName);
       }
     },
     async removeMember(memberId) {
@@ -42,6 +47,29 @@ export default {
       this.qrCodeUrl = await QRCode.toDataURL(this.inviteLink);
     },
     handleFileChange(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const options = {
+          maxSizeMB: 5,
+          maxWidthOrHeight: 1920,
+          useWebWorker: true,
+        };
+
+        imageCompression(file, options).then((compressedFile) => {
+          this.selectedFile = compressedFile;
+          this.groupAvaUrl = URL.createObjectURL(compressedFile);
+          this.isGroupAvaChanged = true;
+          if (compressedFile.size > 5 * 1024 * 1024) {
+            console.error('Файл слишком большой!');
+          }
+        }).catch((error) => {
+          console.error('Ошибка при сжатии:', error);
+        });
+
+      }
+    },
+    triggerFileInput() {
+      this.$refs.fileInput.click();
     },
   },
   mounted() {
@@ -49,14 +77,13 @@ export default {
   },
 };
 </script>
-
 <template>
-  <v-dialog v-model="isDialogOpen" max-width="600px">
+  <v-dialog max-width="600px">
     <v-card class="main-dialog-card">
       <p class="card_name">Редактирование группы</p>
       <div class="row_in_edit">
-        <div class="icon_photo">
-          <img v-if="group.avaUrl !== null" :src="group.avaUrl" alt="Group Image"/>
+        <div class="icon_photo" @click="triggerFileInput">
+          <img v-if="groupAvaUrl" :src="groupAvaUrl" alt="Group Avatar"/>
         </div>
         <div class="group-info">
           <v-text-field
@@ -64,13 +91,21 @@ export default {
               label="Название группы"
               variant="outlined"
               color="primary"
+              @change="this.isGroupNameChanged = true"
               required>
           </v-text-field>
         </div>
       </div>
+      <input
+          ref="fileInput"
+          type="file"
+          accept="image/*"
+          style="display: none;"
+          @change="handleFileChange"
+      />
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn @click="isDialogOpen = false">Отмена</v-btn>
+        <v-btn @click="this.$emit('close')">Отмена</v-btn>
         <v-btn color="primary" @click="updateGroup">Сохранить</v-btn>
       </v-card-actions>
     </v-card>
@@ -149,6 +184,7 @@ h4 {
 .icon_photo img {
   width: 100%;
   height: 100%;
-  //border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
 }
 </style>

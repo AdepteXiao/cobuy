@@ -37,7 +37,7 @@ const groupImagesApi = axios.create({
 });
 
 function addToken() {
-    [groupApi, listApi, loginApi, prodApi].forEach(api => {
+    [groupApi, listApi, loginApi, prodApi, groupImagesApi].forEach(api => {
         api.interceptors.request.use(config => {
             if (localStorage.getItem("auth_token")) {
                 config.headers.Authorization = `Bearer ${localStorage.getItem("auth_token")}`;

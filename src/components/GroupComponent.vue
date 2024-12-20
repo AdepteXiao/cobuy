@@ -8,6 +8,7 @@ export default {
   props: {
     data: Object,
   },
+  inject: ["deleteGroup", "editGroup", "editGroupAvatar"],
   data() {
     return {
       group: this.data,
@@ -15,14 +16,19 @@ export default {
     }
   },
   methods: {
-    async deleteGroup(groupId) {
-      try {
-        await GroupApi.deleteGroup(groupId);
-        this.$emit('group-deleted', groupId);
-      } catch (error) {
-        console.log(error);
-      }
+    async deleteGroup() {
+      this.deleteGroup(this.group.id);
+
     },
+    async updateGroup(groupId, name) {
+      this.showEditDialog = false;
+      await this.editGroup(this.group.id, name);
+    },
+
+    async updateGroupAvatar(groupId, formData) {
+      this.showEditDialog = false;
+      await this.editGroupAvatar(this.group.id, formData);
+    }
   },
   mounted() {
   }
@@ -65,7 +71,7 @@ export default {
         </v-list-item>
       </v-list>
     </v-menu>
-    <GroupEditComponent :group="group" v-model="showEditDialog" max-width="500px"></GroupEditComponent>
+    <GroupEditComponent :group="group" @group-ava-edited="updateGroupAvatar" @group-name-edited="updateGroup" @close="this.showEditDialog = false" v-model="showEditDialog" max-width="500px"></GroupEditComponent>
   </v-card>
 
 </template>
@@ -153,6 +159,8 @@ img {
   width: 100%;
   height: 100%;
   border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
 }
 
 </style>

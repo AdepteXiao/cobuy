@@ -1,6 +1,7 @@
 <script>
 import GroupComponent from "@/components/GroupComponent.vue";
 import GroupApi from "@/api/GroupApi.js";
+import GroupImagesApi from "@/api/GroupImagesApi.js";
 
 export default {
   name: 'Groups',
@@ -25,6 +26,7 @@ export default {
     async createGroup() {
       try {
         const response = await GroupApi.createGroup("New Group", "");
+        // console.log(response.data.data);
         this.groups.unshift(response.data.data);
       } catch (error) {
         console.log(error);
@@ -35,12 +37,45 @@ export default {
       if (index !== -1) {
         this.groups.splice(index, 1);
       }
+      try {
+        await GroupApi.deleteGroup(groupId);
+      } catch (error) {
+        console.log(error);
+      }
     },
+
+    async editGroup(groupId, name) {
+      const index = this.groups.findIndex(group => group.id === groupId);
+      this.groups[index].name = name;
+      try {
+        await GroupApi.updateGroup(groupId, name);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async editGroupAvatar(groupId, formData) {
+      const index = this.groups.findIndex(group => group.id === groupId);
+      this.groups[index].avaUrl = URL.createObjectURL(formData.get('image'));
+      try {
+        await GroupImagesApi.updateAva(groupId, formData);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
     async getLists(groupId) {
       this.curGroupId = groupId;
       localStorage.setItem('curGroupId', groupId);
       this.$emit('group-selected', groupId);
     },
+  },
+  provide() {
+    return {
+      deleteGroup: this.deleteGroup,
+      editGroup: this.editGroup,
+      editGroupAvatar: this.editGroupAvatar,
+      }
   },
   async mounted() {
     await this.getGroups();
@@ -64,7 +99,7 @@ export default {
   <v-divider></v-divider>
   <v-list class="sidebar-list" overflow-y-auto>
     <div v-for="group in groups" :key="group.id">
-      <GroupComponent :data="group" @group-deleted="deleteGroup" @click="getLists(group.id)"/>
+      <GroupComponent :data="group" @click="getLists(group.id)"/>
       <v-divider></v-divider>
     </div>
   </v-list>
