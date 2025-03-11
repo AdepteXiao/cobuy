@@ -1,10 +1,10 @@
 import axios from "axios";
 
-const baseAddress = 'http://hihit.sytes.net';
+const baseAddress = 'http://hihit.sytes.net:9987';
 // const baseAddress = import.meta.env.BASE_API_URL;
 
 
-const loginAddress = `${baseAddress}/api/login`;
+const authAddress = `${baseAddress}/api`;
 const groupAddress = `${baseAddress}/api/group`;
 const listAddress = `${baseAddress}/api/list`;
 const prodAddress = `${baseAddress}/api/list`;
@@ -12,8 +12,8 @@ const inviteAddress = `${baseAddress}/api/invite`;
 const groupImagesAddress = `${baseAddress}/api/group`;
 
 
-const loginApi = axios.create({
-    baseURL: loginAddress,
+const authApi = axios.create({
+    baseURL: authAddress,
 });
 
 const groupApi = axios.create({
@@ -37,7 +37,7 @@ const groupImagesApi = axios.create({
 });
 
 function addToken() {
-    [groupApi, listApi, loginApi, prodApi, groupImagesApi].forEach(api => {
+    [groupApi, listApi, authApi, prodApi, groupImagesApi].forEach(api => {
         api.interceptors.request.use(config => {
             if (localStorage.getItem("auth_token")) {
                 config.headers.Authorization = `Bearer ${localStorage.getItem("auth_token")}`;
@@ -52,7 +52,7 @@ function addToken() {
 
 
 export default {
-    loginApi,
+    authApi,
     groupApi,
     listApi,
     prodApi,

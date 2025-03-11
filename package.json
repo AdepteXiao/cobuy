@@ -21,6 +21,7 @@
     "compressorjs": "^1.2.1",
     "qrcode": "^1.5.4",
     "vue": "^3.4.29",
+    "vue-router": "^4.5.0",
     "vuetify": "^3.7.2"
   },
   "devDependencies": {

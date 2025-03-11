@@ -2,6 +2,8 @@ import './assets/main.css'
 
 import { createApp } from 'vue'
 import App from './App.vue'
+import router from './router';
+
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap'
@@ -31,4 +33,5 @@ library.add(fas);
 createApp(App)
     .component("fa", FontAwesomeIcon)
     .use(vuetify)
+    .use(router)
     .mount('#app')
