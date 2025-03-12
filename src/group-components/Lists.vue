@@ -14,7 +14,7 @@
     data() {
       return {
         lists: [],
-        // curListId: -1,
+        curListId: -1,
         // curGroupId: -1,
       }
     },

@@ -14,4 +14,8 @@ export default class {
     static async deleteProduct(listId, productId) {
         return await BaseApi.prodApi.delete(`/${listId}/product/${productId}`);
     }
+
+    static async updateProduct(listId, productId, data) {
+        return await BaseApi.prodApi.put(`/${listId}/product/${productId}`, data);
+    }
 }

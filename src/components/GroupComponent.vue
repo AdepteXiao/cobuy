@@ -16,8 +16,8 @@ export default {
     }
   },
   methods: {
-    async deleteGroup() {
-      this.deleteGroup(this.group.id);
+    async deleteCurGroup() {
+      await this.deleteGroup(this.group.id);
 
     },
     async updateGroup(groupId, name) {
@@ -66,14 +66,13 @@ export default {
         <v-list-item @click="this.showEditDialog = true">
           <v-list-item-title>Редактировать</v-list-item-title>
         </v-list-item>
-        <v-list-item @click="deleteGroup(group.id)">
+        <v-list-item @click="deleteCurGroup(group.id)">
           <v-list-item-title>Удалить</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>
     <GroupEditComponent :group="group" @group-ava-edited="updateGroupAvatar" @group-name-edited="updateGroup" @close="this.showEditDialog = false" v-model="showEditDialog" max-width="500px"></GroupEditComponent>
   </v-card>
-
 </template>
 
 <style scoped>

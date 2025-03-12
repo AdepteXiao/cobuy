@@ -15,6 +15,12 @@ export default {
       // curListId: -1,
     }
   },
+  provide() {
+    return {
+      deleteProduct: this.deleteProduct,
+      editProduct: this.editProduct,
+    }
+  },
   methods: {
     async getProducts(listId) {
       try {
@@ -24,7 +30,7 @@ export default {
         console.error(error);
       }
     },
-    async createNote() {
+    async createProduct() {
       try {
         const response = await ProdApi.createProduct(localStorage.getItem("curListId"), "New product");
         this.products.push(response.data.data);
@@ -32,10 +38,26 @@ export default {
         console.log(error);
       }
     },
+    async editProduct(updatedProduct) {
+      const index = this.products.findIndex(product => product.id === updatedProduct.id);
+      if (index !== -1) {
+        this.products[index] = updatedProduct;
+      }
+      try {
+        await ProdApi.updateProduct(this.curListId, updatedProduct.id, updatedProduct);
+      } catch (error) {
+        console.error("Ошибка при обновлении продукта:", error);
+      }
+    },
     async deleteProduct(productId) {
       const index = this.products.findIndex(product => product.id === productId);
       if (index !== -1) {
         this.products.splice(index, 1);
+      }
+      try {
+        await ProdApi.deleteProduct(this.curListId, productId);
+      } catch (error) {
+        console.log(error);
       }
     },
   },
@@ -52,11 +74,11 @@ import NoteComponent from "@/components/NoteComponent.vue";
 
 <template>
   <v-list class="main-list" overflow-y-auto>
-    <v-btn icon flat class="button-icon" @click="createNote">
+    <v-btn icon flat class="button-icon" @click="createProduct">
       <fa :icon="['fas', 'plus']"/>
     </v-btn>
     <div v-for="product in products" :key="product.id">
-      <NoteComponent @note-deleted="deleteProduct" :data="product" :listId="this.curListId"/>
+      <NoteComponent :data="product"/>
     </div>
   </v-list>
 </template>

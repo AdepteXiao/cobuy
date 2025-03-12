@@ -1,16 +1,21 @@
 <script>
 import ProdApi from "@/api/ProdApi.js";
-import GroupApi from "@/api/GroupApi.js";
+import NoteEditComponent from "./NoteEditComponent.vue";
 
 export default {
   name: 'NoteComponent',
+  components: {
+    NoteEditComponent,
+  },
   props: {
     data: Object,
-    listId: Number,
   },
+  inject: ["deleteProduct", "editProduct"],
   data() {
     return {
-      prod: this.data
+      prod: this.data,
+      curListId: this.data.shoppingListId,
+      showEditDialog: false,
     };
   },
   mounted() {
@@ -36,13 +41,15 @@ export default {
       }
     },
 
+    async updateProduct(updatedProduct) {
+      console.log(updatedProduct)
+      this.showEditDialog = false;
+      await this.editProduct(updatedProduct);
+    },
+
     async deleteNote(noteId) {
-      try {
-        await ProdApi.deleteProduct(this.listId, noteId);
-        this.$emit('note-deleted', noteId);
-      } catch (error) {
-        console.log(error);
-      }
+      this.showEditDialog = false;
+      await this.deleteProduct(noteId)
     },
   }
 };
@@ -78,7 +85,7 @@ export default {
       </template>
 
       <v-list>
-        <v-list-item @click="">
+        <v-list-item @click="this.showEditDialog = true">
           <v-list-item-title>Редактировать</v-list-item-title>
         </v-list-item>
         <v-list-item @click="deleteNote(prod.id)">
@@ -86,6 +93,7 @@ export default {
         </v-list-item>
       </v-list>
     </v-menu>
+    <NoteEditComponent :prod="prod" @edited="updateProduct" @close="this.showEditDialog = false" v-model="showEditDialog" max-width="500px" />
   </v-card>
 </template>
 
