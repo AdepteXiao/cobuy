@@ -16,4 +16,12 @@ export default class {
             password
         });
     }
+
+    static async loginCheck(token) {
+        return await BaseApi.authApi.get("/login/check", {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+    }
 }

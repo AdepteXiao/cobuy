@@ -28,6 +28,8 @@ export default {
       try {
         const response = await AuthApi.login(this.email, this.password);
         console.log(response);
+        localStorage.setItem('auth_token', response.data.accessToken);
+        localStorage.setItem('user_login', this.email);
         this.$router.push('/main');
       } catch (error) {
         console.error(error);

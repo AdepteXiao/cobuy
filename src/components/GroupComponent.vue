@@ -1,6 +1,8 @@
 <script>
 import GroupApi from "@/api/GroupApi.js";
 import GroupEditComponent from "@/components/GroupEditComponent.vue";
+import Invite from "@/api/InviteApi.js";
+import InviteApi from "@/api/InviteApi.js";
 
 export default {
   name: 'GroupComponent',
@@ -16,6 +18,18 @@ export default {
     }
   },
   methods: {
+    async invite() {
+    //   try {
+    //     const response = await InviteApi.getInviteLink(this.group.id);
+    //     const token = response.data.token;
+    //     await navigator.clipboard.writeText(token);
+    //     alert('Токен скопирована в буфер обмена: ' + token);
+    //
+    //   } catch (error) {
+    //     console.error('Ошибка при копировании:', error);
+    // }
+    },
+
     async deleteCurGroup() {
       await this.deleteGroup(this.group.id);
 
@@ -63,6 +77,9 @@ export default {
       </template>
 
       <v-list >
+        <v-list-item @click="this.invite()">
+          <v-list-item-title>Пригласить</v-list-item-title>
+        </v-list-item>
         <v-list-item @click="this.showEditDialog = true">
           <v-list-item-title>Редактировать</v-list-item-title>
         </v-list-item>

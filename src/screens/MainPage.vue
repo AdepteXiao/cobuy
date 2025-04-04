@@ -5,8 +5,8 @@ import ListComponent from '../components/ListComponent.vue';
 import GroupComponent from '../components/GroupComponent.vue';
 import NoteComponent from '../components/NoteComponent.vue';
 import Groups from '../group-components/Groups.vue';
-import { useDark, useToggle } from '@vueuse/core';
-import { useDisplay } from 'vuetify';
+import {useDark, useToggle} from '@vueuse/core';
+import {useDisplay} from 'vuetify';
 
 export default {
   name: 'MainPage',
@@ -23,8 +23,8 @@ export default {
       curGroupId: -1,
       curListId: -1,
       drawer: true,
-      email: "qwe@qwe.qwe",
-      password: "qweqweqwe",
+      // email: "qwe@qwe.qwe",
+      // password: "qweqweqwe",
       success: false,
       isLeftPartVisible: true,
       isDark: useDark(),
@@ -71,14 +71,22 @@ export default {
           this.drawer = true;
         }
       }
-    }
+    },
+    logout() {
+      localStorage.removeItem('auth_token');
+      this.$router.push('/login');
+    },
   },
   async mounted() {
-    const resizeObserver = new ResizeObserver(this.handleResize);
-    const element = this.$el;
-    resizeObserver.observe(element);
-    this.resizeObserver = resizeObserver;
-    localStorage.setItem('auth_token', '139|7s42Ign6FfPGWLKid19zhOPrx7vP4GPOG4hY7gjec976ae6f');
+    if (this.$el) {
+      this.resizeObserver = new ResizeObserver(this.handleResize);
+      this.resizeObserver.observe(this.$el);
+    }
+    // const resizeObserver = new ResizeObserver(this.handleResize);
+    // const element = this.$el;
+    // resizeObserver.observe(element);
+    // this.resizeObserver = resizeObserver;
+    // localStorage.setItem('auth_token', '139|7s42Ign6FfPGWLKid19zhOPrx7vP4GPOG4hY7gjec976ae6f');
   },
   beforeUnmount() {
     this.resizeObserver.disconnect();
@@ -103,9 +111,21 @@ export default {
             </v-btn>
             <p class="app-bar-text">{{ currentGroupAndList }}</p>
             <v-spacer></v-spacer>
-            <v-btn icon @click="">
-              <fa :icon="['fas', 'gear']" class="app-bar-icon"/>
-            </v-btn>
+            <v-menu class="menu-button-container" :location="'end top'">
+              <template v-slot:activator="{ props }">
+                <v-btn icon flat class="app-bar-icon" v-bind="props">
+                  <fa :icon="['fas', 'gear']"/>
+                </v-btn>
+              </template>
+              <v-list>
+                <v-list-item @click="logout">
+                  <v-list-item-title>Выйти</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+<!--            <v-btn icon @click="">-->
+<!--              <fa :icon="['fas', 'gear']" class="app-bar-icon"/>-->
+<!--            </v-btn>-->
           </v-toolbar>
           <Products ref="products"></Products>
         </v-col>

@@ -13,8 +13,9 @@ export default {
   inject: ["deleteProduct", "editProduct"],
   data() {
     return {
+      email: localStorage.getItem('user_login'),
       prod: this.data,
-      curListId: this.data.shoppingListId,
+      curListId: localStorage.getItem('curListId'),
       showEditDialog: false,
     };
   },
@@ -39,6 +40,15 @@ export default {
           noteButtons.style.flexDirection = 'row';
         }
       }
+    },
+
+    async changeStatus(status) {
+      if (this.prod.status === status) {
+        this.prod.status = 0;
+      } else {
+        this.prod.status = status;
+      }
+      await this.editProduct(this.prod);
     },
 
     async updateProduct(updatedProduct) {
@@ -72,8 +82,16 @@ export default {
       <div class="bot-card">
         <p class="note-description">{{ prod.description }}</p>
         <div ref="noteButtons" class="note-buttons">
-          <v-btn class="bottom-btn" density="compact" variant="outlined">Планирую</v-btn>
-          <v-btn class="bottom-btn" density="compact" variant="outlined">Куплено</v-btn>
+          <v-btn class="bottom-btn" density="compact" variant="outlined"
+                 :class="{ 'pressed': prod.status === 2 && prod.buyer?.email === email }"
+                 :disabled="prod.status !== 0 && (prod.buyer?.email && prod.buyer.email !== email)"
+                 @click="changeStatus(2)">Планирую
+          </v-btn>
+          <v-btn class="bottom-btn" density="compact" variant="outlined"
+                 :class="{ 'pressed': prod.status === 1 && prod.buyer?.email === email }"
+                 :disabled="prod.status !== 0 && (prod.buyer?.email && prod.buyer.email !== email)"
+                 @click="changeStatus(1)">Куплено
+          </v-btn>
         </div>
       </div>
     </div>
@@ -93,11 +111,18 @@ export default {
         </v-list-item>
       </v-list>
     </v-menu>
-    <NoteEditComponent :prod="prod" @edited="updateProduct" @close="this.showEditDialog = false" v-model="showEditDialog" max-width="500px" />
+    <NoteEditComponent :prod="prod" @edited="updateProduct" @close="this.showEditDialog = false"
+                       v-model="showEditDialog" max-width="500px"/>
   </v-card>
 </template>
 
 <style scoped>
+.pressed {
+  background-color: #4CAF50;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+  transform: translateY(1px);
+}
+
 .v-list {
   padding: 0;
 }
@@ -111,10 +136,11 @@ export default {
   min-height: 35px;
   padding: 12px 5px 12px 5px;
 }
-  .button-icon {
-    color: var(--color-icon);
-    background-color: var(--color-accent);
-  }
+
+.button-icon {
+  color: var(--color-icon);
+  background-color: var(--color-accent);
+}
 
 .note-card {
   min-width: 400px;

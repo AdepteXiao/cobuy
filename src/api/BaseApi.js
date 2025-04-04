@@ -36,6 +36,7 @@ const groupImagesApi = axios.create({
     baseURL: groupImagesAddress,
 });
 
+
 function addToken() {
     [groupApi, listApi, authApi, prodApi, groupImagesApi].forEach(api => {
         api.interceptors.request.use(config => {
