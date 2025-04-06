@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const baseAddress = 'http://hihit.sytes.net:9987';
+// const baseAddress = 'http://hihit.sytes.net:9987';
+const baseAddress = 'https://cobuy.online';
 // const baseAddress = import.meta.env.BASE_API_URL;
 
 
@@ -38,7 +39,7 @@ const groupImagesApi = axios.create({
 
 
 function addToken() {
-    [groupApi, listApi, authApi, prodApi, groupImagesApi].forEach(api => {
+    [groupApi, listApi, authApi, prodApi, groupImagesApi, inviteApi].forEach(api => {
         api.interceptors.request.use(config => {
             if (localStorage.getItem("auth_token")) {
                 config.headers.Authorization = `Bearer ${localStorage.getItem("auth_token")}`;

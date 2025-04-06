@@ -19,15 +19,14 @@ export default {
   },
   methods: {
     async invite() {
-    //   try {
-    //     const response = await InviteApi.getInviteLink(this.group.id);
-    //     const token = response.data.token;
-    //     await navigator.clipboard.writeText(token);
-    //     alert('Токен скопирована в буфер обмена: ' + token);
-    //
-    //   } catch (error) {
-    //     console.error('Ошибка при копировании:', error);
-    // }
+      try {
+        const response = await InviteApi.getInviteLink(this.group.id);
+        await navigator.clipboard.writeText(response.data.token);
+        alert('Ключ скопирован в буфер обмена: ' + response.data.token);
+
+      } catch (error) {
+        console.error('Ошибка при копировании:', error);
+    }
     },
 
     async deleteCurGroup() {

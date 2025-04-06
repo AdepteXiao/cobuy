@@ -73,7 +73,7 @@ export default {
       }
     },
     logout() {
-      localStorage.removeItem('auth_token');
+      localStorage.removeItem('auth_token, user_login, curGroupId, curListId');
       this.$router.push('/login');
     },
   },

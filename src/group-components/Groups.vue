@@ -2,16 +2,20 @@
 import GroupComponent from "@/components/GroupComponent.vue";
 import GroupApi from "@/api/GroupApi.js";
 import GroupImagesApi from "@/api/GroupImagesApi.js";
+import JoinGroupDialog from "@/components/JoinGroupDialog.vue";
+import InviteApi from "@/api/InviteApi.js";
 
 export default {
   name: 'Groups',
   components: {
     GroupComponent,
+    JoinGroupDialog
   },
   data() {
     return {
       groups: [],
-      text: ''
+      text: '',
+      showJoinDialog: false
     }
   },
   methods: {
@@ -26,7 +30,6 @@ export default {
     async createGroup() {
       try {
         const response = await GroupApi.createGroup("New Group", "");
-        // console.log(response.data.data);
         this.groups.unshift(response.data.data);
       } catch (error) {
         console.log(error);
@@ -43,7 +46,6 @@ export default {
         console.log(error);
       }
     },
-
     async editGroup(groupId, name) {
       const index = this.groups.findIndex(group => group.id === groupId);
       this.groups[index].name = name;
@@ -53,7 +55,6 @@ export default {
         console.log(error);
       }
     },
-
     async editGroupAvatar(groupId, formData) {
       const index = this.groups.findIndex(group => group.id === groupId);
       this.groups[index].avaUrl = URL.createObjectURL(formData.get('image'));
@@ -63,19 +64,30 @@ export default {
         console.log(error);
       }
     },
-
+    async inviteToGroup(token){
+      try {
+        await InviteApi.invite(token);
+        await this.getGroups();
+      } catch (error) {
+        console.log(error);
+      }
+    },
     async getLists(groupId) {
       this.curGroupId = groupId;
       localStorage.setItem('curGroupId', groupId);
       this.$emit('group-selected', groupId);
     },
+    openJoinDialog() {
+      this.$refs.joinDialog.open();
+    }
   },
   provide() {
     return {
+      inviteToGroup: this.inviteToGroup,
       deleteGroup: this.deleteGroup,
       editGroup: this.editGroup,
       editGroupAvatar: this.editGroupAvatar,
-      }
+    }
   },
   async mounted() {
     await this.getGroups();
@@ -84,7 +96,7 @@ export default {
       this.curGroupId = savedGroupId;
       await this.getLists(savedGroupId);
     }
-  },
+  }
 }
 </script>
 
@@ -92,6 +104,9 @@ export default {
   <div class="scroll-list-annotation">
     <p class="annotation-text">Группы</p>
     <v-spacer></v-spacer>
+    <v-btn icon flat size="x-small" class="sidebar-button" @click="openJoinDialog">
+      <fa :icon="['fas', 'sign-in']"/>
+    </v-btn>
     <v-btn icon flat size="x-small" class="sidebar-button" @click="createGroup()">
       <fa :icon="['fas', 'plus']"/>
     </v-btn>
@@ -103,6 +118,7 @@ export default {
       <v-divider></v-divider>
     </div>
   </v-list>
+  <JoinGroupDialog ref="joinDialog"/>
 </template>
 
 <style scoped>

@@ -45,10 +45,13 @@ export default {
     async changeStatus(status) {
       if (this.prod.status === status) {
         this.prod.status = 0;
+        console.log("status 0");
       } else {
         this.prod.status = status;
+        console.log(`status ${status}`);
       }
       await this.editProduct(this.prod);
+
     },
 
     async updateProduct(updatedProduct) {
@@ -83,12 +86,12 @@ export default {
         <p class="note-description">{{ prod.description }}</p>
         <div ref="noteButtons" class="note-buttons">
           <v-btn class="bottom-btn" density="compact" variant="outlined"
-                 :class="{ 'pressed': prod.status === 2 && prod.buyer?.email === email }"
+                 :class="{ 'pressed': prod.status === 2 && (!prod.buyer || prod.buyer.email === email) }"
                  :disabled="prod.status !== 0 && (prod.buyer?.email && prod.buyer.email !== email)"
                  @click="changeStatus(2)">Планирую
           </v-btn>
           <v-btn class="bottom-btn" density="compact" variant="outlined"
-                 :class="{ 'pressed': prod.status === 1 && prod.buyer?.email === email }"
+                 :class="{ 'pressed': prod.status === 1 && (!prod.buyer || prod.buyer.email === email) }"
                  :disabled="prod.status !== 0 && (prod.buyer?.email && prod.buyer.email !== email)"
                  @click="changeStatus(1)">Куплено
           </v-btn>
